@@ -1,25 +1,31 @@
-import logo from './logo.svg';
-import './App.css';
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import SignInPage from "./pages/SignInPage.js";
+import SignUpPage from "./pages/SignUpPage.js";
+import Menu from "./components/Menu.js";
+import { styled } from "styled-components";
+import HomePage from "./pages/HomePage.js";
+import RankingPage from "./pages/RankingPage.js";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <PagesContainer>
+      <BrowserRouter>
+        <Menu />
+        <Routes>
+          <Route path="/" element={<RankingPage />} />
+          <Route path="/signup" element={<SignUpPage />} />
+          <Route path="/signin" element={<SignInPage />} />
+          <Route path="/home" element={<HomePage />} />
+        </Routes>
+      </BrowserRouter>
+    </PagesContainer>
   );
 }
 
 export default App;
+
+const PagesContainer = styled.main`
+margin: 0 auto 50px;
+padding: 0 10%;
+max-width:1020px;
+`;
