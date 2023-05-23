@@ -2,9 +2,10 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { styled } from "styled-components";
 import trophy from "../assets/trophy.png";
+import { Oval } from "react-loader-spinner";
 
 export default function RankingPage({user}) {
-  const [ranking, setRanking] = useState([]);
+  const [ranking, setRanking] = useState();
 
   useEffect(() => {
     const url = `${process.env.REACT_APP_API_URL}/ranking`;
@@ -24,8 +25,10 @@ export default function RankingPage({user}) {
         <img src={trophy} alt="" />
         <h2>Ranking</h2>
       </TitleContainer>
-      <RankingBox>
-        {ranking.map((userRank, index) => (
+      
+      <RankingBox ranking={ranking}>
+      {!ranking && <Oval color="#5D9040" secondaryColor="#80CC74"/>}
+        {ranking && ranking.map((userRank, index) => (
           <li key={index}>
             {index + 1}. {userRank.name} - {userRank.linksCount} links -{" "}
             {userRank.visitCount} visualizações
@@ -54,6 +57,9 @@ const RankingBox = styled.ul`
   border: 1px solid rgba(120, 177, 89, 0.25);
   box-shadow: 0px 4px 24px rgba(120, 177, 89, 0.12);
   border-radius: 24px;
+  display:flex;
+  flex-direction:column;
+  align-items:${(props) => (props.ranking ? "start" : "center")};;
   li {
     font-weight: 500;
     font-size: 22px;

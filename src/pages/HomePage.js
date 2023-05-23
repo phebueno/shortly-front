@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { styled } from "styled-components";
 import UrlItem from "../components/UrlItem.js";
+import { Oval } from "react-loader-spinner";
 
 export default function HomePage({user}) {
   const [userData, setUserData] = useState();
@@ -123,7 +124,9 @@ export default function HomePage({user}) {
         />
         <button>Encurtar link</button>
       </Form>
+      {!userData && <Oval color="#5D9040" secondaryColor="#80CC74"/>}
       <LinksContainer>
+      
         {userData &&
           userData.shortenedUrls &&
           userData.shortenedUrls
@@ -150,10 +153,12 @@ const LinksContainer = styled.ul`
   li {
     display: flex;
   }
+  width:100%;
 `;
 
 const Form = styled.form`
   display: flex;
+  width:100%;
   justify-content: space-between;
   gap: 70px;
   input {
@@ -165,4 +170,5 @@ const HomeContainer = styled.section`
   display: flex;
   flex-direction: column;
   gap: 60px;
+  align-items:center;
 `;
