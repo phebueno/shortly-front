@@ -1,83 +1,78 @@
-import axios from "axios";
-import { useContext, useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { styled } from "styled-components";
 import logo from "../assets/twemoji_shorts.png";
-import UserContext from "../contexts/UserContext.js";
 
-export default function Menu({ setUsuarioLogado }) {
-  const userData = useContext(UserContext);
-  const [loading, setLoading] = useState(true);
+export default function Menu({ setUser, user }) {
   const navigate = useNavigate();
-  console.log(loading);
-
+  const location = useLocation();
   useEffect(() => {
-    if (setLoading === false) return;
-    const token = localStorage.getItem("userAuth");
-    if (userData) return;
-    console.log("chegou a rodar");
-    //O resto do código só acontece para permanência de usuário caso ele acesse a página por fora.
-    const config = {
-      headers: {
-        Authorization: `Bearer ${JSON.parse(token)}`,
-      },
-    };
-    const url = `${process.env.REACT_APP_API_URL}/users/me`;
-    axios
-      .get(url, config)
-      .then((res) => {
-        setUsuarioLogado(res.data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.log(err.response.data);
-        setLoading(false);
-        navigate("/")
-      });
-  }, [setUsuarioLogado, userData]);
+    const auth = localStorage.getItem("userAuth");
+    if (auth) {
+      const { name } = JSON.parse(auth);
+      setUser(name);
+    }
+  }, [setUser, location]);
 
   function logout() {
     const logoutConfirmation = window.confirm(
       "Tem certeza de que deseja sair?"
     );
     if (logoutConfirmation) {
-      setUsuarioLogado(undefined);
+      setUser(undefined);
       localStorage.removeItem("userAuth");
+      navigate("/signin");
     }
   }
 
   return (
     <Header>
-      <MenuBar>
-        <h2>
-          {!userData && loading && "Carregando..."}
-          {userData && `Seja bem vindo (a), ${userData.name}!`}
-        </h2>
-        {!userData && loading && "Carregando..."}
-        {!userData && !loading && (
+      {!user && (
+        <MenuBar>
+          <div></div>
           <ul>
             <li>
-              <Link to="/signin">Entrar</Link>
+              <LinkStyle
+                selected={location.pathname === "/signin" && true}
+                to="/signin"
+              >
+                Entrar
+              </LinkStyle>
             </li>
             <li>
-              <Link to="/signup">Cadastrar-se</Link>
+              <LinkStyle
+                selected={location.pathname === "/signup" && true}
+                to="/signup"
+              >
+                Cadastrar-se
+              </LinkStyle>
             </li>
           </ul>
-        )}
-        {userData && !loading && (
+        </MenuBar>
+      )}
+      {user && (
+        <MenuBar>
+          <h2>Seja bem vindo (a), {user}!</h2>
           <ul>
             <li>
-              <Link to="/home">Home</Link>
+              <LinkStyle
+                selected={location.pathname === "/home" && true}
+                to="/home"
+              >
+                Home
+              </LinkStyle>
             </li>
             <li>
-              <Link to="/">Ranking</Link>
+              <LinkStyle selected={location.pathname === "/" && true} to="/">
+                Ranking
+              </LinkStyle>
             </li>
             <li>
-              <Link onClick={logout}>Sair</Link>
+              <LinkStyle onClick={logout}>Sair</LinkStyle>
             </li>
           </ul>
-        )}
-      </MenuBar>
+        </MenuBar>
+      )}
       <Title>
         <h1>Shortly</h1>
         <img src={logo} alt="" />
@@ -85,6 +80,11 @@ export default function Menu({ setUsuarioLogado }) {
     </Header>
   );
 }
+
+const LinkStyle = styled(Link)`
+  color: ${(props) => (props.selected ? "#5d9040" : "#9c9c9c")};
+  text-decoration: none;
+`;
 
 const MenuBar = styled.div`
   display: flex;
@@ -100,16 +100,6 @@ const MenuBar = styled.div`
   ul {
     display: flex;
     gap: 22px;
-  }
-  li {
-    color: #9c9c9c;
-    a,
-    a:visited,
-    a:hover,
-    a:active {
-      text-decoration: none;
-      color: inherit;
-    }
   }
 `;
 

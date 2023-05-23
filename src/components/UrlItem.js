@@ -1,10 +1,10 @@
 import { styled } from "styled-components";
 import trashIcon from "../assets/trash.png";
 
-export default function UrlItem({link, setUsuarioLogado, deleteUrl}) {
+export default function UrlItem({link, setUsuarioLogado, deleteUrl, openUrl}) {
   return (
     <li>
-      <LinkItem>
+      <LinkItem onClick={()=>openUrl(link.shortUrl,link.url)}>
         <span id="url">{link.url}</span>
         <span id="short-url">{link.shortUrl}</span>
         <span id="visit-count">Quantidade de visitantes: {link.visitCount}</span>
@@ -38,6 +38,7 @@ const DeleteItem = styled.div`
 `;
 
 const LinkItem = styled.div`
+  cursor:pointer;
   display: flex;
   justify-content: space-between;
   box-sizing: border-box;

@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { styled } from "styled-components";
 
-export default function SignInPage() {
+export default function SignInPage({setUser}) {
   const [loginUsuario, setLoginUsuario] = useState({
     email: "",
     password: "",
@@ -25,12 +25,9 @@ export default function SignInPage() {
       .post(url, loginUsuario)
       .then((res) => {
         //Cria sessão com armazenamento local
-        const { token } = res.data;
-        console.log(res);
-        const dadosSerializados = JSON.stringify(token);
+        const dadosSerializados = JSON.stringify(res.data);
         localStorage.setItem("userAuth", dadosSerializados);
-        console.log(res.data);
-        //setUser(user);
+        setUser(res.data.name);
         navigate("/home");
       })
       .catch((err) => {

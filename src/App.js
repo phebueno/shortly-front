@@ -5,24 +5,21 @@ import Menu from "./components/Menu.js";
 import { styled } from "styled-components";
 import HomePage from "./pages/HomePage.js";
 import RankingPage from "./pages/RankingPage.js";
-import UserContext from "./contexts/UserContext.js";
 import { useState } from "react";
 function App() {
-  const [usuarioLogado, setUsuarioLogado] = useState(undefined);
+  const [user, setUser] = useState(undefined);
   return (
-    <UserContext.Provider value={usuarioLogado}>
-      <PagesContainer>
-        <BrowserRouter>
-          <Menu setUsuarioLogado={setUsuarioLogado}/>
-          <Routes>
-            <Route path="/" element={<RankingPage />} />
-            <Route path="/signup" element={<SignUpPage />} />
-            <Route path="/signin" element={<SignInPage />} />
-            <Route path="/home" element={<HomePage setUsuarioLogado={setUsuarioLogado}/>} />
-          </Routes>
-        </BrowserRouter>
-      </PagesContainer>
-    </UserContext.Provider>
+    <PagesContainer>
+      <BrowserRouter>
+        <Menu setUser={setUser} user={user} />
+        <Routes>
+          <Route path="/" element={<RankingPage user={user}/>} />
+          <Route path="/signup" element={<SignUpPage />} />
+          <Route path="/signin" element={<SignInPage setUser={setUser} />} />
+          <Route path="/home" element={<HomePage user={user}/>} />
+        </Routes>
+      </BrowserRouter>
+    </PagesContainer>
   );
 }
 

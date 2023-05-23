@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { styled } from "styled-components";
 
@@ -34,6 +34,11 @@ export default function SignUpPage() {
         });
     }
   }
+  
+  useEffect(() => {
+    const token = localStorage.getItem("userAuth");
+    if (token) return navigate("/home");
+  });
 
   return (
     <Form onSubmit={signup}>

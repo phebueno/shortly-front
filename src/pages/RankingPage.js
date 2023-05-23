@@ -1,12 +1,10 @@
 import axios from "axios";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { styled } from "styled-components";
 import trophy from "../assets/trophy.png";
-import UserContext from "../contexts/UserContext.js";
 
-export default function RankingPage() {
+export default function RankingPage({user}) {
   const [ranking, setRanking] = useState([]);
-  const userData = useContext(UserContext);
 
   useEffect(() => {
     const url = `${process.env.REACT_APP_API_URL}/ranking`;
@@ -35,7 +33,7 @@ export default function RankingPage() {
         ))}
       </RankingBox>
       <RankingMessage>
-        {!userData ? "Crie sua conta para usar nosso serviço!" : ""}
+        {!user && "Crie sua conta para usar nosso serviço!"}
       </RankingMessage>
     </RankingContainer>
   );
