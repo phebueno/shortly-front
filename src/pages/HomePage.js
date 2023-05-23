@@ -1,114 +1,116 @@
+import axios from "axios";
+import { useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { styled } from "styled-components";
-import trash from "../assets/trash.png"
+import UrlItem from "../components/UrlItem.js";
+import UserContext from "../contexts/UserContext.js";
 
-export default function HomePage() {
+export default function HomePage({ setUsuarioLogado }) {
+  const userData = useContext(UserContext);
+  const navigate = useNavigate();
+  const [shortUrl, setShortUrl] = useState({
+    url: "",
+  });
+
+  function deleteUrl(id){
+    const token = localStorage.getItem("userAuth");
+      if (!token) return navigate("/");
+      const config = {
+        headers: {
+          Authorization: `Bearer ${JSON.parse(token)}`,
+        },
+      };
+      const url = `${process.env.REACT_APP_API_URL}/urls/${id}`;
+      axios
+      .delete(url, config)
+      .then((res) => {
+        alert("Link deletado!");
+        const newLinkArr = userData.shortenedUrls.filter(obj => obj.id !== id);
+        //como já recebeu os dados: adiciona manualmente, sem necessidade de nova requisição
+        setUsuarioLogado({ ...userData, shortenedUrls:newLinkArr });
+      })
+      .catch((err) => {
+        alert(err.response.data);
+      });
+  }
+
+  function shortenUrl(e) {
+      e.preventDefault();
+      const token = localStorage.getItem("userAuth");
+      if (!token) return navigate("/");
+      const config = {
+        headers: {
+          Authorization: `Bearer ${JSON.parse(token)}`,
+        },
+      };
+      const url = `${process.env.REACT_APP_API_URL}/urls/shorten`;
+      axios
+        .post(url, shortUrl, config)
+        .then((res) => {
+          alert("Aqui está o seu link obtido: " + res.data.shortUrl);
+          const newLinkArr = userData.shortenedUrls.push({
+            id: res.data.id,
+            shortUrl: res.data.shortUrl,
+            url: shortUrl.url,
+            visitCount:0
+          });
+          //como já recebeu os dados: adiciona manualmente, sem necessidade de nova requisição
+          setUsuarioLogado({ ...userData, newLinkArr });
+        })
+        .catch((err) => {
+          alert(err.response.data);
+        });
+    }
+
+  useEffect(() => {
+    const token = localStorage.getItem("userAuth");
+    if (!token) return navigate("/");
+    const config = {
+      headers: {
+        Authorization: `Bearer ${JSON.parse(token)}`,
+      },
+    };
+    const url = `${process.env.REACT_APP_API_URL}/users/me`;
+    axios
+      .get(url, config)
+      .then((res) => {
+        setUsuarioLogado(res.data);
+      })
+      .catch((err) => {
+        console.log(err.response.data);
+      });
+  }, [setUsuarioLogado, navigate]);
+
+  function handleChange(e) {
+    setShortUrl({ ...shortUrl, [e.target.name]: e.target.value });
+  }
+
   return (
     <HomeContainer>
-      <Form>
-        <input type="text" name="" id="" placeholder="Links que cabem no bolso"/>
+      <Form onSubmit={shortenUrl}>
+        <input
+          type="text"
+          name="url"
+          value={shortUrl.email}
+          onChange={handleChange}
+          placeholder="Links que cabem no bolso"
+        />
         <button>Encurtar link</button>
       </Form>
       <LinksContainer>
-        <li>
-          <LinkItem>
-            <span id="url">https://www.driven.com.brzsrgzsdrgzsreg</span>
-            <span id="short-url">WWWWWWWW</span>
-            <span id="visit-count">Quantidade de visitantes: 271</span>
-          </LinkItem>
-          <DeleteItem><img src={trash} alt="" /></DeleteItem>
-        </li>
-        <li>
-          <LinkItem>
-            <span id="url">https://www.driven.com.br</span>
-            <span id="short-url">MMMMMMMM</span>
-            <span id="visit-count">Quantidade de visitantes: 10271</span>
-          </LinkItem>
-          <DeleteItem><img src={trash} alt="" /></DeleteItem>
-        </li>
-        <li>
-          <LinkItem>
-            <span id="url">https://www.driven.com.br</span>
-            <span id="short-url">e4231A</span>
-            <span id="visit-count">Quantidade de visitantes: 271</span>
-          </LinkItem>
-          <DeleteItem><img src={trash} alt="" /></DeleteItem>
-        </li>
-        
+        {userData && userData.shortenedUrls &&
+          userData.shortenedUrls.slice(0).reverse().map((link) => (
+            <UrlItem
+              key={link.id}
+              link={link}
+              setUsuarioLogado={setUsuarioLogado}
+              deleteUrl={deleteUrl}
+            />
+          ))}
       </LinksContainer>
     </HomeContainer>
   );
 }
-
-const DeleteItem = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  box-sizing: border-box;
-  width: 200px;
-  height: 60px;
-  background: #ffffff;
-  box-shadow: 0px 4px 24px rgba(120, 177, 89, 0.12);
-  border-radius: 0px 12px 12px 0px;
-  border: 1px solid rgba(120, 177, 89, 0.25);
-  @media (max-width: 930px) {
-    flex-direction: column;
-    height:100px;
-    width:20%;
-    padding: 20px;
-    min-width:150px;
-  }
-`;
-
-const LinkItem = styled.div`
-  display: flex;
-  justify-content: space-between;
-  box-sizing: border-box;
-  width: 100%;
-  display: flex;
-  align-items: center;
-  height: 60px;
-  background: #80cc74;
-  box-shadow: 0px 4px 24px rgba(120, 177, 89, 0.12);
-  border-radius: 12px 0px 0px 12px;
-  padding: 0 20px;
-
-  font-weight: 400;
-  font-size: 14px;
-  line-height: 18px;
-  color: #ffffff;
-  span{
-    box-sizing: border-box;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  #url{
-    width: 30%;
-  }
-  #short-url{
-    width:20%;
-  }
-  #visit-count{
-    width: 40%;
-  }
-  //Responsividade:
-  @media (max-width: 930px) {
-    flex-direction: column;
-    height:100px;
-    width:80%;
-    justify-content:space-evenly;
-    
-    overflow: hidden;
-    text-overflow: ellipsis;
-    span,#visit-count,#url,#short-url{
-      width:100%;
-      text-align:center;
-      overflow:none;
-      text-overflow:none;
-
-  font-size: 20px;
-    }
-  }
-`;
 
 const LinksContainer = styled.ul`
   display: flex;

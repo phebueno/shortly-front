@@ -1,20 +1,82 @@
-import { Link } from "react-router-dom";
+import axios from "axios";
+import { useContext, useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { styled } from "styled-components";
 import logo from "../assets/twemoji_shorts.png";
+import UserContext from "../contexts/UserContext.js";
 
-export default function Menu() {
+export default function Menu({ setUsuarioLogado }) {
+  const userData = useContext(UserContext);
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+  console.log(loading);
+
+  useEffect(() => {
+    if (setLoading === false) return;
+    const token = localStorage.getItem("userAuth");
+    if (userData) return;
+    console.log("chegou a rodar");
+    //O resto do código só acontece para permanência de usuário caso ele acesse a página por fora.
+    const config = {
+      headers: {
+        Authorization: `Bearer ${JSON.parse(token)}`,
+      },
+    };
+    const url = `${process.env.REACT_APP_API_URL}/users/me`;
+    axios
+      .get(url, config)
+      .then((res) => {
+        setUsuarioLogado(res.data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.log(err.response.data);
+        setLoading(false);
+        navigate("/")
+      });
+  }, [setUsuarioLogado, userData]);
+
+  function logout() {
+    const logoutConfirmation = window.confirm(
+      "Tem certeza de que deseja sair?"
+    );
+    if (logoutConfirmation) {
+      setUsuarioLogado(undefined);
+      localStorage.removeItem("userAuth");
+    }
+  }
+
   return (
     <Header>
       <MenuBar>
-        <h2>Seja bem vindo (a), Pessoa!</h2>
-        <ul>
-          <li>
-            <Link to="/signin">Entrar</Link>
-          </li>
-          <li>
-            <Link to="/signup">Cadastrar-se</Link>
-          </li>
-        </ul>
+        <h2>
+          {!userData && loading && "Carregando..."}
+          {userData && `Seja bem vindo (a), ${userData.name}!`}
+        </h2>
+        {!userData && loading && "Carregando..."}
+        {!userData && !loading && (
+          <ul>
+            <li>
+              <Link to="/signin">Entrar</Link>
+            </li>
+            <li>
+              <Link to="/signup">Cadastrar-se</Link>
+            </li>
+          </ul>
+        )}
+        {userData && !loading && (
+          <ul>
+            <li>
+              <Link to="/home">Home</Link>
+            </li>
+            <li>
+              <Link to="/">Ranking</Link>
+            </li>
+            <li>
+              <Link onClick={logout}>Sair</Link>
+            </li>
+          </ul>
+        )}
       </MenuBar>
       <Title>
         <h1>Shortly</h1>

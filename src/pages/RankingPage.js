@@ -1,7 +1,25 @@
+import axios from "axios";
+import { useContext, useEffect, useState } from "react";
 import { styled } from "styled-components";
 import trophy from "../assets/trophy.png";
+import UserContext from "../contexts/UserContext.js";
 
 export default function RankingPage() {
+  const [ranking, setRanking] = useState([]);
+  const userData = useContext(UserContext);
+
+  useEffect(() => {
+    const url = `${process.env.REACT_APP_API_URL}/ranking`;
+    axios
+      .get(url)
+      .then((res) => {
+        setRanking(res.data);
+      })
+      .catch((err) => {
+        console.log(err.response.data);
+      });
+  }, []);
+
   return (
     <RankingContainer>
       <TitleContainer>
@@ -9,12 +27,16 @@ export default function RankingPage() {
         <h2>Ranking</h2>
       </TitleContainer>
       <RankingBox>
-        <li>1. Fulaninha - 32 links - 1.703.584 visualizações</li>
-        <li>2. Fulaninha - 32 links - 1.703.584 visualizações</li>
-        <li>3. Fulaninha - 32 links - 1.703.584 visualizações</li>
-        <li>4. Fulaninha - 32 links - 1.703.584 visualizações</li>
+        {ranking.map((userRank, index) => (
+          <li key={index}>
+            {index + 1}. {userRank.name} - {userRank.linksCount} links -{" "}
+            {userRank.visitCount} visualizações
+          </li>
+        ))}
       </RankingBox>
-      <RankingMessage>Crie sua conta para usar nosso serviço!</RankingMessage>
+      <RankingMessage>
+        {!userData ? "Crie sua conta para usar nosso serviço!" : ""}
+      </RankingMessage>
     </RankingContainer>
   );
 }
