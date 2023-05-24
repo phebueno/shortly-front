@@ -12,14 +12,14 @@ function App() {
   const [token, setToken] = useState(localStorage.getItem("token"));
   return (
     <PagesContainer>
-      <AuthContext.Provider value={{user,setUser, token, setToken}}>
+      <AuthContext.Provider value={{ user, setUser, token, setToken }}>
         <BrowserRouter>
-          <Menu setUser={setUser} user={user} />
+          <Menu />
           <Routes>
-            <Route path="/" element={<RankingPage user={user} />} />
+            <Route path="/" element={<RankingPage />} />
             <Route path="/signup" element={<SignUpPage />} />
-            <Route path="/signin" element={<SignInPage setUser={setUser} />} />
-            <Route path="/home" element={<HomePage user={user} />} />
+            <Route path="/signin" element={<SignInPage />} />
+            <Route path="/home" element={<HomePage />} />
           </Routes>
         </BrowserRouter>
       </AuthContext.Provider>

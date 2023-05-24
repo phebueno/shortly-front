@@ -10,7 +10,7 @@ import {
   useOpenUrl,
 } from "../../services/urls.js";
 
-export default function HomePage({ user }) {
+export default function HomePage() {
   const { form, handleForm, setForm } = useForm({
     url: "",
   });

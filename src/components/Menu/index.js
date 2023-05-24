@@ -1,9 +1,12 @@
-import {MenuBar, Title, Header, LinkStyle} from "./styled.js"
-import { useLocation} from "react-router-dom";
+import { MenuBar, Title, Header, LinkStyle } from "./styled.js";
+import { useLocation } from "react-router-dom";
 import logo from "../../assets/twemoji_shorts.png";
 import useLogout from "../../hooks/useLogout.js";
+import { useContext } from "react";
+import AuthContext from "../../contexts/AuthContext.js";
 
-export default function Menu({ setUser, user }) {
+export default function Menu() {
+  const { user } = useContext(AuthContext);
   const location = useLocation();
   const logout = useLogout();
 
@@ -50,7 +53,7 @@ export default function Menu({ setUser, user }) {
               </LinkStyle>
             </li>
             <li>
-              <LinkStyle onClick={()=>logout()}>Sair</LinkStyle>
+              <LinkStyle onClick={() => logout()}>Sair</LinkStyle>
             </li>
           </ul>
         </MenuBar>
@@ -62,4 +65,3 @@ export default function Menu({ setUser, user }) {
     </Header>
   );
 }
-
