@@ -1,29 +1,11 @@
-import { useEffect } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation} from "react-router-dom";
 import { styled } from "styled-components";
 import logo from "../assets/twemoji_shorts.png";
+import useLogout from "../hooks/useLogout.js";
 
 export default function Menu({ setUser, user }) {
-  const navigate = useNavigate();
   const location = useLocation();
-  useEffect(() => {
-    const auth = localStorage.getItem("userAuth");
-    if (auth) {
-      const { name } = JSON.parse(auth);
-      setUser(name);
-    }
-  }, [setUser, location]);
-
-  function logout() {
-    const logoutConfirmation = window.confirm(
-      "Tem certeza de que deseja sair?"
-    );
-    if (logoutConfirmation) {
-      setUser(undefined);
-      localStorage.removeItem("userAuth");
-      navigate("/signin");
-    }
-  }
+  const logout = useLogout();
 
   return (
     <Header>
@@ -68,7 +50,7 @@ export default function Menu({ setUser, user }) {
               </LinkStyle>
             </li>
             <li>
-              <LinkStyle onClick={logout}>Sair</LinkStyle>
+              <LinkStyle onClick={()=>logout()}>Sair</LinkStyle>
             </li>
           </ul>
         </MenuBar>

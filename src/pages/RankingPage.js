@@ -1,23 +1,10 @@
-import axios from "axios";
-import { useEffect, useState } from "react";
 import { styled } from "styled-components";
 import trophy from "../assets/trophy.png";
 import { Oval } from "react-loader-spinner";
+import useRanking from "../services/ranking.js";
 
 export default function RankingPage({user}) {
-  const [ranking, setRanking] = useState();
-
-  useEffect(() => {
-    const url = `${process.env.REACT_APP_API_URL}/ranking`;
-    axios
-      .get(url)
-      .then((res) => {
-        setRanking(res.data);
-      })
-      .catch((err) => {
-        console.log(err.response.data);
-      });
-  }, []);
+  const ranking = useRanking();
 
   return (
     <RankingContainer>

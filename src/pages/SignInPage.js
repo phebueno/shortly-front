@@ -1,55 +1,36 @@
-import axios from "axios";
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { styled } from "styled-components";
+import useForm from "../hooks/useForm.js";
+import useKickIn from "../hooks/useKickIn.js";
+import { useSignIn } from "../services/auth.js";
 
-export default function SignInPage({setUser}) {
-  const [loginUsuario, setLoginUsuario] = useState({
+export default function SignInPage() {
+  const { form, handleForm } = useForm({
     email: "",
     password: "",
   });
-  const navigate = useNavigate();
+  const signIn = useSignIn();
+  
+  useKickIn();
 
-  useEffect(() => {
-    const token = localStorage.getItem("userAuth");
-    if (token) return navigate("/home");
-  });
-
-  function handleChange(e) {
-    setLoginUsuario({ ...loginUsuario, [e.target.name]: e.target.value });
-  }
-  function signin(e) {
+  function submitForm(e) {
     e.preventDefault();
-    const url = `${process.env.REACT_APP_API_URL}/signin`;
-    axios
-      .post(url, loginUsuario)
-      .then((res) => {
-        //Cria sessão com armazenamento local
-        const dadosSerializados = JSON.stringify(res.data);
-        localStorage.setItem("userAuth", dadosSerializados);
-        setUser(res.data.name);
-        navigate("/home");
-      })
-      .catch((err) => {
-        console.log(err.response);
-        alert(err.response.data);
-      });
+    signIn(form);
   }
 
   return (
-    <Form onSubmit={signin}>
+    <Form onSubmit={submitForm}>
       <input
         type="email"
         name="email"
-        value={loginUsuario.email}
-        onChange={handleChange}
+        value={form.email}
+        onChange={handleForm}
         placeholder="E-mail"
       />
       <input
         type="password"
         name="password"
-        value={loginUsuario.password}
-        onChange={handleChange}
+        value={form.password}
+        onChange={handleForm}
         placeholder="Senha"
       />
 

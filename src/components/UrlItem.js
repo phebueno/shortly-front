@@ -1,7 +1,7 @@
 import { styled } from "styled-components";
 import trashIcon from "../assets/trash.png";
 
-export default function UrlItem({link, setUsuarioLogado, deleteUrl, openUrl}) {
+export default function UrlItem({link, deleteUrl, openUrl, getUserData}) {
   return (
     <li>
       <LinkItem onClick={()=>openUrl(link.shortUrl,link.url)}>
@@ -9,7 +9,7 @@ export default function UrlItem({link, setUsuarioLogado, deleteUrl, openUrl}) {
         <span id="short-url">{link.shortUrl}</span>
         <span id="visit-count">Quantidade de visitantes: {link.visitCount}</span>
       </LinkItem>
-      <DeleteItem onClick={()=>deleteUrl(link.id)}>
+      <DeleteItem onClick={()=>deleteUrl(link.id,getUserData)}>
         <img src={trashIcon} alt="" />
       </DeleteItem>
     </li>

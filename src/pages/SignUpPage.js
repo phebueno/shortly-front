@@ -1,73 +1,54 @@
-import axios from "axios";
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { styled } from "styled-components";
+import useForm from "../hooks/useForm.js";
+import useKickIn from "../hooks/useKickIn.js";
+import { useSignUp } from "../services/auth.js";
 
 export default function SignUpPage() {
-  const [cadastroUsuario, setCadastroUsuario] = useState({
+  const { form, handleForm } = useForm({
     name: "",
     email: "",
     password: "",
     confirmPassword: "",
   });
-  const navigate = useNavigate();
-
-  function handleChange(e) {
-    setCadastroUsuario({ ...cadastroUsuario, [e.target.name]: e.target.value });
-  }
-
-  function signup(e) {
-    e.preventDefault();
-    if (cadastroUsuario.confirmPassword !== cadastroUsuario.password) {
-      return alert("As senhas diferem. Tente novamente.");
-    } else {
-      const url = `${process.env.REACT_APP_API_URL}/signup`;
-      axios
-        .post(url, cadastroUsuario)
-        .then((res) => {
-          console.log(res.data);
-          navigate("/signin");
-        })
-        .catch((err) => {
-          console.log(err.response);
-          alert(err.response.data);
-        });
-    }
-  }
+  const signUp = useSignUp();
   
-  useEffect(() => {
-    const token = localStorage.getItem("userAuth");
-    if (token) return navigate("/home");
-  });
+  useKickIn();
+
+  function submitForm(e) {
+    e.preventDefault();
+    if (form.confirmPassword !== form.password)
+      return alert("As senhas diferem. Tente novamente.");
+    signUp(form);
+  }
 
   return (
-    <Form onSubmit={signup}>
+    <Form onSubmit={submitForm}>
       <input
         type="text"
         name="name"
-        value={cadastroUsuario.name}
-        onChange={handleChange}
+        value={form.name}
+        onChange={handleForm}
         placeholder="Nome"
       />
       <input
         type="email"
         name="email"
-        value={cadastroUsuario.email}
-        onChange={handleChange}
+        value={form.email}
+        onChange={handleForm}
         placeholder="E-mail"
       />
       <input
         type="password"
         name="password"
-        value={cadastroUsuario.password}
-        onChange={handleChange}
+        value={form.password}
+        onChange={handleForm}
         placeholder="Senha"
       />
       <input
         type="password"
         name="confirmPassword"
-        value={cadastroUsuario.confirmPassword}
-        onChange={handleChange}
+        value={form.confirmPassword}
+        onChange={handleForm}
         placeholder="Confirmar senha"
       />
 
