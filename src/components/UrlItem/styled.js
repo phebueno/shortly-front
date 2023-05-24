@@ -1,22 +1,6 @@
 import { styled } from "styled-components";
-import trashIcon from "../assets/trash.png";
 
-export default function UrlItem({link, deleteUrl, openUrl, getUserData}) {
-  return (
-    <li>
-      <LinkItem onClick={()=>openUrl(link.shortUrl,link.url)}>
-        <span id="url">{link.url}</span>
-        <span id="short-url">{link.shortUrl}</span>
-        <span id="visit-count">Quantidade de visitantes: {link.visitCount}</span>
-      </LinkItem>
-      <DeleteItem onClick={()=>deleteUrl(link.id,getUserData)}>
-        <img src={trashIcon} alt="" />
-      </DeleteItem>
-    </li>
-  );
-}
-
-const DeleteItem = styled.div`
+export const DeleteItem = styled.div`
   cursor:pointer;
   display: flex;
   justify-content: center;
@@ -37,7 +21,7 @@ const DeleteItem = styled.div`
   }
 `;
 
-const LinkItem = styled.div`
+export const LinkItem = styled.div`
   cursor:pointer;
   display: flex;
   justify-content: space-between;

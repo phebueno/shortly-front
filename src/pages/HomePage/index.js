@@ -1,14 +1,14 @@
-import { styled } from "styled-components";
-import UrlItem from "../components/UrlItem.js";
+import { LinksContainer, Form, HomeContainer } from "./styled";
+import UrlItem from "../../components/UrlItem";
 import { Oval } from "react-loader-spinner";
-import useKickOut from "../hooks/useKickOut.js";
-import useForm from "../hooks/useForm.js";
+import useKickOut from "../../hooks/useKickOut.js";
+import useForm from "../../hooks/useForm.js";
 import {
   useGetUserData,
   useDeleteUrl,
   useShortenUrl,
   useOpenUrl,
-} from "../services/urls.js";
+} from "../../services/urls.js";
 
 export default function HomePage({ user }) {
   const { form, handleForm, setForm } = useForm({
@@ -57,30 +57,3 @@ export default function HomePage({ user }) {
     </HomeContainer>
   );
 }
-
-const LinksContainer = styled.ul`
-  display: flex;
-  flex-direction: column;
-  gap: 42px;
-  li {
-    display: flex;
-  }
-  width: 100%;
-`;
-
-const Form = styled.form`
-  display: flex;
-  width: 100%;
-  justify-content: space-between;
-  gap: 70px;
-  input {
-    width: 70%;
-  }
-`;
-
-const HomeContainer = styled.section`
-  display: flex;
-  flex-direction: column;
-  gap: 60px;
-  align-items: center;
-`;

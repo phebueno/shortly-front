@@ -1,7 +1,7 @@
-import { styled } from "styled-components";
-import useForm from "../hooks/useForm.js";
-import useKickIn from "../hooks/useKickIn.js";
-import { useSignUp } from "../services/auth.js";
+import { Form } from "./styled.js";
+import useForm from "../../hooks/useForm.js";
+import useKickIn from "../../hooks/useKickIn.js";
+import { useSignUp } from "../../services/auth.js";
 
 export default function SignUpPage() {
   const { form, handleForm } = useForm({
@@ -56,15 +56,3 @@ export default function SignUpPage() {
     </Form>
   );
 }
-
-const Form = styled.form`
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 25px;
-  margin-bottom: 40px;
-  button {
-    margin-top: 41px;
-  }
-`;

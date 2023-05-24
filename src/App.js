@@ -1,10 +1,10 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import SignInPage from "./pages/SignInPage.js";
-import SignUpPage from "./pages/SignUpPage.js";
-import Menu from "./components/Menu.js";
+import SignInPage from "./pages/SignInPage";
+import SignUpPage from "./pages/SignUpPage";
+import Menu from "./components/Menu";
 import { styled } from "styled-components";
-import HomePage from "./pages/HomePage.js";
-import RankingPage from "./pages/RankingPage.js";
+import HomePage from "./pages/HomePage";
+import RankingPage from "./pages/RankingPage";
 import { useState } from "react";
 import AuthContext from "./contexts/AuthContext.js";
 function App() {
